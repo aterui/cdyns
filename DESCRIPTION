@@ -1,0 +1,18 @@
+Package: cdyns
+Type: Package
+Title: Community Dynamics Simulation with Stock Enhancement
+Version: 0.1.0
+Author: Akira Terui
+Maintainer: Akira Terui <hanabi0111@gmail.com>
+Description: Community dynamics simulation with stock enhancement. See README for details.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Imports:
+  dplyr,
+  rlang
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

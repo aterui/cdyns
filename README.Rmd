@@ -1,0 +1,67 @@
+---
+title: "README"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+setwd(here::here())
+```
+
+
+# Installation
+
+The `cdyns` package can be installed with the following script:
+
+```{r installation, eval = FALSE}
+#install.packages("remotes")
+remotes::install_github("aterui/cdyns")
+library(cdyns)
+```
+
+# Overview
+
+The R package `cdyns` is a collection of functions to perform community dynamics simulations with stock enhancement. The current version of the package includes the following functions:
+
+-   `cdynsim` : Community dynamics simulation with stock enhancement
+
+# Instruction
+
+## Basic usage
+
+The key arguments are `n_timestep` (the number of time step to be saved), `n_warmup` (warm-up period during which seeding happens), `n_burnin` (burn-in period for eliminating initial condition effects), and the number of species in a community (`n_species`). The community dynamics are simulated using either a Ricker equation (`model = "ricker"`) or a Beverton-Holt equation (`model = "bh"`).
+
+Sample script:
+
+```{r}
+library(cdyns)
+sim <- cdynsim(n_timestep = 1000,
+               n_warmup = 200,
+               n_burnin = 200,
+               n_species = 10)
+```
+
+This script returns the following:
+
+-   `df_dyn`: dataframe for dynamics. Columns include time step (`timestep`), species id (`species`), and density (`density`)
+
+-   `df_community`: dataframe for the whole community. Columns include a temporal mean (`mean_density`) and sd (`sd_density`) of the whole community density.
+
+-   `df_species`: dataframe for species density and traits. Columns include species id (species), temporal mean (`mean_density`) and sd of species density (`sd_density`), carrying capacity (`k`), intrinsic population growth rate (`r`), and interspecific competition coefficient with the stocked species (`alpha_j1`).
+
+-   `interaction_matrix`: matrix of intra- and interspecific interactions.
+
+```{r}
+print(sim)
+```
+
+## Stock enhancement
+
+Stock enhancement can be added using `stock` argument. For example, `stock = 100` adds 100 individuals to species 1 every time step:
+
+```{r, eval = F}
+sim <- cdynsim(n_timestep = 1000,
+               n_warmup = 200,
+               n_burnin = 200,
+               n_species = 10,
+               stock = 100)
+```
