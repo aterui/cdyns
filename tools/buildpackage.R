@@ -26,3 +26,7 @@ usethis::use_test("cdynsim")
 usethis::use_coverage()
 covr::package_coverage()
 #file.remove("cdyns_0.1.0.tar.gz")
+
+# vigenettes --------------------------------------------------------------
+
+

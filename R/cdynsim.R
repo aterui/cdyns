@@ -89,6 +89,7 @@ cdynsim <- function(n_timestep = 1000,
   ## parameter: species interaction ####
 
   if (int_type == "random") {
+    if (length(alpha) > 1) stop("alpha must be a scalar")
     m_int <- matrix(rexp(n_species * n_species,
                          rate = 1 / alpha),
                     nrow = n_species,
@@ -96,6 +97,7 @@ cdynsim <- function(n_timestep = 1000,
   }
 
   if (int_type == "constant") {
+    if (length(alpha) > 1) stop("alpha must be a scalar")
     m_int <- matrix(alpha,
                     nrow = n_species,
                     ncol = n_species)
@@ -103,6 +105,7 @@ cdynsim <- function(n_timestep = 1000,
 
   if (int_type == "manual") {
     if (!is.matrix(alpha)) stop("alpha must be a matrix")
+    if (any(dim(alpha) != n_species)) stop("alpha must have dimensions of n_species")
     m_int <- alpha
   }
 
@@ -121,7 +124,14 @@ cdynsim <- function(n_timestep = 1000,
                  max = r_max)
   } else {
     if (r_type == "constant") {
-      v_r <- rep(r, n_species)
+
+      if(length(r) == 1) {
+        v_r <- rep(r, n_species)
+      } else {
+        if(length(r) != n_species) stop("r must have a length of n_species")
+        v_r <- r
+      }
+
     } else {
       message("r_type must be either random or constant")
     }
@@ -168,7 +178,9 @@ cdynsim <- function(n_timestep = 1000,
                        n2 = v_n2,
                        k = k,
                        m_int = m_int)
-    v_n <- v_n_hat * exp(m_eps[i, ])
+
+    v_n <- rpois(n = n_species,
+                 lambda = v_n_hat * exp(m_eps[i, ]))
 
     if (i > n_discard) {
       row_id <- seq(from = st_row[i - n_discard],
@@ -181,13 +193,10 @@ cdynsim <- function(n_timestep = 1000,
     }
   }
 
-  df_dyn <- dplyr::as_tibble(m_dyn)
 
-  df_community <- df_dyn %>%
-    dplyr::group_by(.data$timestep) %>%
-    dplyr::summarize(summed_density = sum(.data$density)) %>%
-    dplyr::summarize(mean_density = mean(.data$summed_density),
-                     sd_density = sd(.data$summed_density))
+  # export ------------------------------------------------------------------
+
+  df_dyn <- dplyr::as_tibble(m_dyn)
 
   df_species <- df_dyn %>%
     dplyr::group_by(.data$species) %>%
@@ -199,6 +208,20 @@ cdynsim <- function(n_timestep = 1000,
                   alpha_j1 = m_int[, 1]) %>%
     dplyr::relocate(.data$species)
 
+  df_community <- df_dyn %>%
+    dplyr::group_by(.data$timestep) %>%
+    dplyr::summarize(summed_density = sum(.data$density)) %>%
+    dplyr::summarize(mean_density = mean(.data$summed_density),
+                     sd_density = sd(.data$summed_density))
+
+  m_vcov <- df_dyn %>%
+    tidyr::pivot_wider(id_cols = .data$timestep,
+                       names_from = .data$species,
+                       names_prefix = "species",
+                       values_from = .data$density) %>%
+    dplyr::select(starts_with("species")) %>%
+    data.matrix() %>%
+    var()
 
   # return ------------------------------------------------------------------
 
@@ -206,7 +229,8 @@ cdynsim <- function(n_timestep = 1000,
     list(df_dyn = df_dyn,
          df_community = df_community,
          df_species = df_species,
-         interaction_matrix = m_int)
+         interaction_matrix = m_int,
+         vcov_matrix = m_vcov)
   )
 
 }
