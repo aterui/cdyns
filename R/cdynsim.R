@@ -179,8 +179,7 @@ cdynsim <- function(n_timestep = 1000,
                        k = k,
                        m_int = m_int)
 
-    v_n <- rpois(n = n_species,
-                 lambda = v_n_hat * exp(m_eps[i, ]))
+    v_n <- v_n_hat * exp(m_eps[i, ])
 
     if (i > n_discard) {
       row_id <- seq(from = st_row[i - n_discard],
