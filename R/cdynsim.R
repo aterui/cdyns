@@ -24,7 +24,7 @@
 #' @return \code{interaction_matrix}
 #'
 #' @importFrom dplyr %>%
-#' @importFrom stats rnorm runif rpois rbinom rexp sd
+#' @importFrom stats rnorm runif rpois rbinom rexp sd var
 #' @importFrom rlang .data
 #'
 #' @author Akira Terui, \email{hanabi0111@gmail.com}
@@ -221,7 +221,7 @@ cdynsim <- function(n_timestep = 1000,
                        names_from = .data$species,
                        names_prefix = "species",
                        values_from = .data$density) %>%
-    dplyr::select(starts_with("species")) %>%
+    dplyr::select(dplyr::starts_with("species")) %>%
     data.matrix() %>%
     var()
 
