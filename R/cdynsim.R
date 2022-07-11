@@ -84,7 +84,7 @@ cdynsim <- function(n_timestep = 1000,
                 to = nrow(m_dyn),
                 by = n_species)
 
-  v_n <- rpois(n = n_species, seed)
+  v_n <- rep(seed, n_species)
 
   ## parameter: species interaction ####
 
