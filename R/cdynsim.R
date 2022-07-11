@@ -148,11 +148,14 @@ cdynsim <- function(n_timestep = 1000,
 
   ## seed interval ####
 
-  if (seed_interval > n_warmup) stop("n_warmup must be larger than seed_interval")
+  if(n_warmup > 0) {
 
-  seeding <- seq(from = seed_interval,
-                 to = max(c(1, n_warmup)),
-                 by = seed_interval)
+    if (seed_interval > n_warmup) stop("n_warmup must be equal to or larger than seed_interval")
+    seeding <- seq(from = seed_interval,
+                   to = max(c(1, n_warmup)),
+                   by = seed_interval)
+
+  }
 
   # dynamics ----------------------------------------------------------------
 
