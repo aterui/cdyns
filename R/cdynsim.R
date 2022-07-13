@@ -3,6 +3,7 @@
 #' @param n_timestep Number of simulation time steps to be saved
 #' @param n_warmup Number of warm-up time steps. Species are randomly seeded during this period with no stock enhancement.
 #' @param n_burnin Number of burn-in time steps. Stock enhancement operates.
+#' @param n_stock_start Time step at which stocking starts.
 #' @param n_species Number of species in a simulated community.
 #' @param k Carrying capacity.
 #' @param r_type Generation method for intrinsic population growth rates. Either \code{"constant"} or \code{"random"}.
@@ -34,6 +35,7 @@
 cdynsim <- function(n_timestep = 1000,
                     n_warmup = 100,
                     n_burnin = 100,
+                    n_stock_start = NULL,
                     n_species = 10,
                     k = 100,
                     r_type = "constant",
@@ -72,6 +74,7 @@ cdynsim <- function(n_timestep = 1000,
 
   n_sim <- n_warmup + n_burnin + n_timestep
   n_discard <- n_warmup + n_burnin
+  if (is.null(n_stock_start)) n_stock_start <- n_warmup + 1
 
   m_dyn <- matrix(NA,
                   nrow = n_timestep * n_species,
@@ -171,7 +174,7 @@ cdynsim <- function(n_timestep = 1000,
     v_n1 <- v_n2 <- v_n
 
     # stock enhancement
-    if (i > n_warmup) {
+    if (i > n_stock_start - 1) {
       v_n1[1] <- v_n1[1] + phi * stock # for reproduction
       v_n2[1] <- v_n2[1] + stock # for competition
     }

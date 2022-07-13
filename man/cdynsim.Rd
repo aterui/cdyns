@@ -8,6 +8,7 @@ cdynsim(
   n_timestep = 1000,
   n_warmup = 100,
   n_burnin = 100,
+  n_stock_start = NULL,
   n_species = 10,
   k = 100,
   r_type = "constant",
@@ -30,6 +31,8 @@ cdynsim(
 \item{n_warmup}{Number of warm-up time steps. Species are randomly seeded during this period with no stock enhancement.}
 
 \item{n_burnin}{Number of burn-in time steps. Stock enhancement operates.}
+
+\item{n_stock_start}{Time step at which stocking starts.}
 
 \item{n_species}{Number of species in a simulated community.}
 
