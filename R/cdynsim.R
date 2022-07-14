@@ -18,6 +18,7 @@
 #' @param model Model for community dynamics. Either \code{"ricker"} (multi-species Ricker model) or \code{"bh"} (multi-species Beverton-Holt model).
 #' @param seed Expected number of seeds.
 #' @param seed_interval Time interval for seeding.
+#' @param extinct Absorbing condition. Speceies with density < extinct will be removed from the simulation.
 #'
 #' @return \code{df_dyn}
 #' @return \code{df_community}
@@ -49,7 +50,8 @@ cdynsim <- function(n_timestep = 1000,
                     alpha = 0.5,
                     model = "ricker",
                     seed = 5,
-                    seed_interval = 10
+                    seed_interval = 10,
+                    extinct = 0
 ) {
 
   # function ----------------------------------------------------------------
@@ -188,6 +190,9 @@ cdynsim <- function(n_timestep = 1000,
     v_n <- v_n_hat * exp(m_eps[i, ])
 
     if (i > n_discard) {
+
+      v_n[v_n < extinct] <- 0
+
       row_id <- seq(from = st_row[i - n_discard],
                     to = st_row[i - n_discard] + n_species - 1,
                     by = 1)

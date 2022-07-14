@@ -22,7 +22,8 @@ cdynsim(
   alpha = 0.5,
   model = "ricker",
   seed = 5,
-  seed_interval = 10
+  seed_interval = 10,
+  extinct = 0
 )
 }
 \arguments{
@@ -61,6 +62,8 @@ cdynsim(
 \item{seed}{Expected number of seeds.}
 
 \item{seed_interval}{Time interval for seeding.}
+
+\item{extinct}{Absorbing condition. Speceies with density < extinct will be removed from the simulation.}
 }
 \value{
 \code{df_dyn}
