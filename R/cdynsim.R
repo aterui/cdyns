@@ -18,7 +18,7 @@
 #' @param model Model for community dynamics. Either \code{"ricker"} (multi-species Ricker model) or \code{"bh"} (multi-species Beverton-Holt model).
 #' @param seed Expected number of seeds.
 #' @param seed_interval Time interval for seeding.
-#' @param extinct Absorbing condition. Speceies with density < extinct will be removed from the simulation.
+#' @param extinct Absorbing condition. Species with density < extinct will be removed from the simulation.
 #'
 #' @return \code{df_dyn}
 #' @return \code{df_community}
