@@ -15,6 +15,7 @@
 #' @param phi Fitness of released individuals relative to wild individuals.
 #' @param int_type Generation method for an interaction matrix.  Either \code{"constant"}, \code{"random"}, or \code{"manual"}.
 #' @param alpha Interspecific competition coefficient. Constant if \code{int_type = "constant"}. Expected value of an exponential distribution if \code{int_type = "random"}. Provide a full matrix if \code{int_type = "manual"}.
+#' @param immigration Mean number of immigration per generation (i.e., mean for a Poisson distribution).
 #' @param model Model for community dynamics. Either \code{"ricker"} (multi-species Ricker model) or \code{"bh"} (multi-species Beverton-Holt model).
 #' @param seed Expected number of seeds.
 #' @param seed_interval Time interval for seeding.
@@ -48,6 +49,7 @@ cdynsim <- function(n_timestep = 1000,
                     phi = 1,
                     int_type = "constant",
                     alpha = 0.5,
+                    immigration = 0,
                     model = "ricker",
                     seed = 5,
                     seed_interval = 10,
@@ -151,6 +153,13 @@ cdynsim <- function(n_timestep = 1000,
                   nrow = n_sim,
                   ncol = n_species)
 
+  ## parameter: immigration ####
+
+  m_im <- matrix(rpois(n = n_sim * n_species,
+                       lambda = immigration),
+                 nrow = n_sim,
+                 ncol = n_species)
+
   ## seed interval ####
 
   if(n_warmup > 0) {
@@ -187,7 +196,7 @@ cdynsim <- function(n_timestep = 1000,
                        k = k,
                        m_int = m_int)
 
-    v_n <- v_n_hat * exp(m_eps[i, ])
+    v_n <- v_n_hat * exp(m_eps[i, ]) + m_im[i, ]
 
     if (i > n_discard) {
 

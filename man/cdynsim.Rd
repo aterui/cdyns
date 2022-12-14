@@ -20,6 +20,7 @@ cdynsim(
   phi = 1,
   int_type = "constant",
   alpha = 0.5,
+  immigration = 0,
   model = "ricker",
   seed = 5,
   seed_interval = 10,
@@ -57,13 +58,15 @@ cdynsim(
 
 \item{alpha}{Interspecific competition coefficient. Constant if \code{int_type = "constant"}. Expected value of an exponential distribution if \code{int_type = "random"}. Provide a full matrix if \code{int_type = "manual"}.}
 
+\item{immigration}{Mean number of immigration per generation (i.e., mean for a Poisson distribution).}
+
 \item{model}{Model for community dynamics. Either \code{"ricker"} (multi-species Ricker model) or \code{"bh"} (multi-species Beverton-Holt model).}
 
 \item{seed}{Expected number of seeds.}
 
 \item{seed_interval}{Time interval for seeding.}
 
-\item{extinct}{Absorbing condition. Speceies with density < extinct will be removed from the simulation.}
+\item{extinct}{Absorbing condition. Species with density < extinct will be removed from the simulation.}
 }
 \value{
 \code{df_dyn}
