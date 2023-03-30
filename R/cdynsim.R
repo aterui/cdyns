@@ -155,8 +155,7 @@ cdynsim <- function(n_timestep = 1000,
 
   ## parameter: immigration ####
 
-  m_im <- matrix(rpois(n = n_sim * n_species,
-                       lambda = immigration),
+  m_im <- matrix(immigration,
                  nrow = n_sim,
                  ncol = n_species)
 
