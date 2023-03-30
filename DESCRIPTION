@@ -1,7 +1,7 @@
 Package: cdyns
 Type: Package
 Title: Community Dynamics Simulation with Stock Enhancement
-Version: 0.1.0
+Version: 0.1.1
 Author: Akira Terui
 Maintainer: Akira Terui <hanabi0111@gmail.com>
 Description: Community dynamics simulation with stock enhancement. See README for details.

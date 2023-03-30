@@ -15,7 +15,7 @@
 #' @param phi Fitness of released individuals relative to wild individuals.
 #' @param int_type Generation method for an interaction matrix.  Either \code{"constant"}, \code{"random"}, or \code{"manual"}.
 #' @param alpha Interspecific competition coefficient. Constant if \code{int_type = "constant"}. Expected value of an exponential distribution if \code{int_type = "random"}. Provide a full matrix if \code{int_type = "manual"}.
-#' @param immigration Mean number of immigration per generation (i.e., mean for a Poisson distribution).
+#' @param immigration Immigration constant per generation
 #' @param model Model for community dynamics. Either \code{"ricker"} (multi-species Ricker model) or \code{"bh"} (multi-species Beverton-Holt model).
 #' @param seed Expected number of seeds.
 #' @param seed_interval Time interval for seeding.

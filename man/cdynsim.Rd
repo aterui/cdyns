@@ -58,7 +58,7 @@ cdynsim(
 
 \item{alpha}{Interspecific competition coefficient. Constant if \code{int_type = "constant"}. Expected value of an exponential distribution if \code{int_type = "random"}. Provide a full matrix if \code{int_type = "manual"}.}
 
-\item{immigration}{Mean number of immigration per generation (i.e., mean for a Poisson distribution).}
+\item{immigration}{Immigration constant per generation}
 
 \item{model}{Model for community dynamics. Either \code{"ricker"} (multi-species Ricker model) or \code{"bh"} (multi-species Beverton-Holt model).}
 
