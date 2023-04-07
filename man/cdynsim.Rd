@@ -21,6 +21,7 @@ cdynsim(
   int_type = "constant",
   alpha = 0.5,
   immigration = 0,
+  sd_immigration = 0,
   model = "ricker",
   seed = 5,
   seed_interval = 10,
@@ -58,7 +59,9 @@ cdynsim(
 
 \item{alpha}{Interspecific competition coefficient. Constant if \code{int_type = "constant"}. Expected value of an exponential distribution if \code{int_type = "random"}. Provide a full matrix if \code{int_type = "manual"}.}
 
-\item{immigration}{Immigration constant per generation}
+\item{immigration}{Mean immigration per generation. Immigration is determined as \code{m ~ N(log(immigration), sd_immigration^2)}}
+
+\item{sd_immigration}{SD immigration over time in a log scale.}
 
 \item{model}{Model for community dynamics. Either \code{"ricker"} (multi-species Ricker model) or \code{"bh"} (multi-species Beverton-Holt model).}
 

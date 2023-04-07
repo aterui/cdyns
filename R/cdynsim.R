@@ -15,7 +15,8 @@
 #' @param phi Fitness of released individuals relative to wild individuals.
 #' @param int_type Generation method for an interaction matrix.  Either \code{"constant"}, \code{"random"}, or \code{"manual"}.
 #' @param alpha Interspecific competition coefficient. Constant if \code{int_type = "constant"}. Expected value of an exponential distribution if \code{int_type = "random"}. Provide a full matrix if \code{int_type = "manual"}.
-#' @param immigration Immigration constant per generation
+#' @param immigration Mean immigration per generation. Immigration is determined as \code{m ~ N(log(immigration), sd_immigration^2)}
+#' @param sd_immigration SD immigration over time in a log scale.
 #' @param model Model for community dynamics. Either \code{"ricker"} (multi-species Ricker model) or \code{"bh"} (multi-species Beverton-Holt model).
 #' @param seed Expected number of seeds.
 #' @param seed_interval Time interval for seeding.
@@ -50,6 +51,7 @@ cdynsim <- function(n_timestep = 1000,
                     int_type = "constant",
                     alpha = 0.5,
                     immigration = 0,
+                    sd_immigration = 0,
                     model = "ricker",
                     seed = 5,
                     seed_interval = 10,
@@ -151,13 +153,31 @@ cdynsim <- function(n_timestep = 1000,
                         mean = 0,
                         sd = sd_env),
                   nrow = n_sim,
-                  ncol = n_species)
+                  ncol = n_species,
+                  byrow = T) # time x species matrix
 
   ## parameter: immigration ####
 
-  m_im <- matrix(immigration,
-                 nrow = n_sim,
-                 ncol = n_species)
+  if (immigration > 0) {
+
+    v_log_m <- rnorm(n = n_sim * n_species,
+                     mean = log(immigration),
+                     sd = sd_immigration)
+
+    m_im <- matrix(exp(v_log_m),
+                   nrow = n_sim,
+                   ncol = n_species,
+                   byrow = T) # time x species matrix
+
+  } else {
+
+    m_im <- matrix(0,
+                   nrow = n_sim,
+                   ncol = n_species,
+                   byrow = T) # time x species matrix
+
+  }
+
 
   ## seed interval ####
 
