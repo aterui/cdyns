@@ -224,7 +224,8 @@ cdynsim <- function(n_timestep = 1000,
                        n1 = v_n1,
                        n2 = v_n2,
                        k = k,
-                       m_int = m_int)
+                       m_int = m_int) %>%
+      as.vector()
 
     v_n <- v_n_hat * exp(m_eps[i, ]) + m_im[i, ]
 
