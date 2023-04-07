@@ -84,10 +84,11 @@ cdynsim <- function(n_timestep = 1000,
 
   m_dyn <- matrix(NA,
                   nrow = n_timestep * n_species,
-                  ncol = 3)
+                  ncol = 4)
   colnames(m_dyn) <- c("timestep",
                        "species",
-                       "density")
+                       "density",
+                       "immigrant")
 
   st_row <- seq(from = 1,
                 to = nrow(m_dyn),
@@ -134,10 +135,10 @@ cdynsim <- function(n_timestep = 1000,
   } else {
     if (r_type == "constant") {
 
-      if(length(r) == 1) {
+      if (length(r) == 1) {
         v_r <- rep(r, n_species)
       } else {
-        if(length(r) != n_species) stop("r must have a length of n_species")
+        if (length(r) != n_species) stop("r must have a length of n_species")
         v_r <- r
       }
 
@@ -154,34 +155,44 @@ cdynsim <- function(n_timestep = 1000,
                         sd = sd_env),
                   nrow = n_sim,
                   ncol = n_species,
-                  byrow = T) # time x species matrix
+                  byrow = TRUE) # time x species matrix
 
   ## parameter: immigration ####
 
-  if (immigration > 0) {
+  m_im <- matrix(NA, nrow = n_sim, ncol = n_species)
 
-    v_log_m <- rnorm(n = n_sim * n_species,
-                     mean = log(immigration),
-                     sd = sd_immigration)
+  ### vector mean immigration
+  if (length(immigration) == 1) {
 
-    m_im <- matrix(exp(v_log_m),
-                   nrow = n_sim,
-                   ncol = n_species,
-                   byrow = T) # time x species matrix
+    v_im <- rep(immigration, n_species)
 
   } else {
 
-    m_im <- matrix(0,
-                   nrow = n_sim,
-                   ncol = n_species,
-                   byrow = T) # time x species matrix
+    if(length(immigration) != n_species) stop("the number of elements in immigration must match n_species")
+    v_im <- immigration
 
   }
 
+  ### matrix immigration
+  for (s in 1:n_species) {
+    if (v_im[s] > 0) {
+
+      v_log_im <- rnorm(n = n_sim,
+                        mean = log(v_im[s]),
+                        sd = sd_immigration)
+
+      m_im[ , s] <- exp(v_log_im)
+
+    } else {
+
+      m_im[ , s] <- rep(0, n_sim)
+
+    }
+  }
 
   ## seed interval ####
 
-  if(n_warmup > 0) {
+  if (n_warmup > 0) {
 
     if (seed_interval > n_warmup) stop("n_warmup must be equal to or larger than seed_interval")
     seeding <- seq(from = seed_interval,
@@ -227,7 +238,8 @@ cdynsim <- function(n_timestep = 1000,
 
       m_dyn[row_id, ] <- cbind(rep(i, n_species) - n_discard, # timestep
                                seq_len(n_species), # species ID
-                               v_n) # density
+                               v_n, # density
+                               m_im[i, ])
     }
   }
 
