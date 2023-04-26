@@ -16,6 +16,7 @@ cdynsim(
   r_min = 1,
   r_max = 3.5,
   sd_env = 0.1,
+  d_st = FALSE,
   stock = 0,
   phi = 1,
   int_type = "constant",
@@ -50,6 +51,8 @@ cdynsim(
 \item{r_max}{Maximum value of intrinsic population growth rate. Disabled if \code{r_type = "constant"}.}
 
 \item{sd_env}{SD of environmental stochasticity in a log scale.}
+
+\item{d_st}{Whether demographic stochasticity is induced or not. If TRUE, population outcome will be a random draws from a Poisson distribution with the expected mean derived from a given population model. If FALSE, population outcome is the expected mean.}
 
 \item{stock}{Number of released individuals.}
 
