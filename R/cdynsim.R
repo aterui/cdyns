@@ -241,7 +241,8 @@ cdynsim <- function(n_timestep = 1000,
                        eps = m_eps[i, ]) %>%
       as.vector()
 
-    v_n <- v_n_hat + rpois(n_species, m_im[i, ])
+    migrant <- rpois(n = n_species, lambda = m_im[i, ])
+    v_n <- v_n_hat + migrant
 
     if (i > n_discard) {
 
@@ -254,7 +255,7 @@ cdynsim <- function(n_timestep = 1000,
       m_dyn[row_id, ] <- cbind(rep(i, n_species) - n_discard, # timestep
                                seq_len(n_species), # species ID
                                v_n, # density
-                               m_im[i, ])
+                               migrant)
     }
   }
 
