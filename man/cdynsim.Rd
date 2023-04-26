@@ -52,7 +52,7 @@ cdynsim(
 
 \item{sd_env}{SD of environmental stochasticity in a log scale.}
 
-\item{d_st}{Whether demographic stochasticity is induced or not. If TRUE, population outcome will be a random draws from a Poisson distribution with the expected mean derived from a given population model. If FALSE, population outcome is the expected mean.}
+\item{d_st}{Whether demographic stochasticity is induced or not. If TRUE, population & immigration outcomes will be a random draws from a Poisson distribution with the expected value of population density or immigration.}
 
 \item{stock}{Number of released individuals.}
 

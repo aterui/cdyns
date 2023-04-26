@@ -11,7 +11,7 @@
 #' @param r_min Minimum value of intrinsic population growth rate. Disabled if \code{r_type = "constant"}.
 #' @param r_max Maximum value of intrinsic population growth rate. Disabled if \code{r_type = "constant"}.
 #' @param sd_env SD of environmental stochasticity in a log scale.
-#' @param d_st Whether demographic stochasticity is induced or not. If TRUE, population outcome will be a random draws from a Poisson distribution with the expected mean derived from a given population model. If FALSE, population outcome is the expected mean.
+#' @param d_st Whether demographic stochasticity is induced or not. If TRUE, population & immigration outcomes will be a random draws from a Poisson distribution with the expected value of population density or immigration.
 #' @param stock Number of released individuals.
 #' @param phi Fitness of released individuals relative to wild individuals.
 #' @param int_type Generation method for an interaction matrix.  Either \code{"constant"}, \code{"random"}, or \code{"manual"}.
@@ -203,6 +203,12 @@ cdynsim <- function(n_timestep = 1000,
     }
   }
 
+  if(isTRUE(d_st)) {
+    m_im <- matrix(rpois(n = n_sim * n_species, lambda = c(m_im)),
+                   nrow = n_sim,
+                   ncol = n_species)
+  }
+
   ## seed interval ####
 
   if (n_warmup > 0) {
@@ -242,8 +248,7 @@ cdynsim <- function(n_timestep = 1000,
                        d_st = d_st) %>%
       as.vector()
 
-    migrant <- rpois(n = n_species, lambda = m_im[i, ])
-    v_n <- v_n_hat + migrant
+    v_n <- v_n_hat + m_im[i, ]
 
     if (i > n_discard) {
 
@@ -256,7 +261,7 @@ cdynsim <- function(n_timestep = 1000,
       m_dyn[row_id, ] <- cbind(rep(i, n_species) - n_discard, # timestep
                                seq_len(n_species), # species ID
                                v_n, # density
-                               migrant)
+                               m_im[i, ])
     }
   }
 
