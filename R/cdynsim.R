@@ -238,7 +238,8 @@ cdynsim <- function(n_timestep = 1000,
                        n2 = v_n2,
                        k = k,
                        m_int = m_int,
-                       eps = m_eps[i, ]) %>%
+                       eps = m_eps[i, ],
+                       d_st = d_st) %>%
       as.vector()
 
     migrant <- rpois(n = n_species, lambda = m_im[i, ])
