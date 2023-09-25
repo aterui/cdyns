@@ -16,11 +16,12 @@ cdynsim(
   r_min = 1,
   r_max = 3.5,
   sd_env = 0.1,
-  d_st = FALSE,
+  stochastic = FALSE,
   stock = 0,
   phi = 1,
   int_type = "constant",
   alpha = 0.5,
+  alpha_scale = "scaled",
   immigration = 0,
   sd_immigration = 0,
   model = "ricker",
@@ -52,7 +53,7 @@ cdynsim(
 
 \item{sd_env}{SD of environmental stochasticity in a log scale.}
 
-\item{d_st}{Whether demographic stochasticity is induced or not. If TRUE, population & immigration outcomes will be a random draws from a Poisson distribution with the expected value of population density or immigration.}
+\item{stochastic}{Whether demographic stochasticity is induced or not. If TRUE, population & immigration outcomes will be a random draws from a Poisson distribution with the expected value of population density or immigration.}
 
 \item{stock}{Number of released individuals.}
 
