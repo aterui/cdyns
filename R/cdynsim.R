@@ -60,33 +60,6 @@ cdynsim <- function(n_timestep = 1000,
                     extinct = 0
 ) {
 
-  # function ----------------------------------------------------------------
-
-  # beverton-holt function
-  if (model == "bh") {
-    fun_dyn <- function(r, n1, n2, k, m_int, eps, stochastic = FALSE) {
-      n_bar <- (n1 * exp(r)) / (1 + ((exp(r) - 1) / k) * (m_int %*% n2))
-      n_hat <- n_bar * exp(eps)
-
-      if(stochastic) y <- rpois(n = length(n_hat), lambda = n_hat) else y <- as.vector(n_hat)
-
-      return(y)
-    }
-  }
-
-  # ricker
-  if (model == "ricker") {
-    fun_dyn <- function(r, n1, n2, k, m_int, eps, stochastic = FALSE) {
-      n_bar <- n1 * exp(r * (1 - ((m_int %*% n2) / k)))
-      n_hat <- n_bar * exp(eps)
-
-      if(stochastic) y <- rpois(n = length(n_hat), lambda = n_hat) else y <- as.vector(n_hat)
-
-      return(y)
-    }
-  }
-
-
   # variables ---------------------------------------------------------------
 
   ## basic objects ####
