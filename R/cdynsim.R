@@ -116,8 +116,15 @@ cdynsim <- function(n_timestep = 1000,
   }
 
   ### diagonal elements
-  if (alpha_scale == "scaled") diag(m_int) <- 1
-  if (!(alpha_scale %in% c("scaled", "unscaled"))) stop ('"alpha_scaled" must be either "scaled" or "unscaled"')
+  if (alpha_scale == "scaled") {
+    diag(m_int) <- 1
+  } else {
+    if (alpha_scale == "unscaled") {
+      message('"alpha_scale = "unscaled"; carrying capacity is controlled by "alpha"')
+    } else {
+      stop ('"alpha_scaled" must be either "scaled" or "unscaled"')
+    }
+  }
 
   ## parameter: population dynamics ####
 
