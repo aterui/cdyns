@@ -52,6 +52,7 @@ cdynsim <- function(n_timestep = 1000,
                     phi = 1,
                     int_type = "constant",
                     alpha = 0.5,
+                    alpha_scale = "scaled",
                     immigration = 0,
                     sd_immigration = 0,
                     model = "ricker",
@@ -59,6 +60,10 @@ cdynsim <- function(n_timestep = 1000,
                     seed_interval = 10,
                     extinct = 0
 ) {
+
+  # model type --------------------------------------------------------------
+
+  fun_dyn <- fn_model(model = model)
 
   # variables ---------------------------------------------------------------
 
@@ -84,6 +89,7 @@ cdynsim <- function(n_timestep = 1000,
 
   ## parameter: species interaction ####
 
+  ### off-diagonal elements
   if (int_type == "random") {
     if (length(alpha) > 1) stop("alpha must be a scalar")
     m_int <- matrix(rexp(n_species * n_species,
@@ -109,8 +115,9 @@ cdynsim <- function(n_timestep = 1000,
     stop("int_type must be either random, constant, or manual")
   }
 
-  diag(m_int) <- 1
-
+  ### diagonal elements
+  if (alpha_scale == "scaled") diag(m_int) <- 1
+  if (!(alpha_scale %in% c("scaled", "unscaled"))) stop ('"alpha_scaled" must be either "scaled" or "unscaled"')
 
   ## parameter: population dynamics ####
 
@@ -218,7 +225,8 @@ cdynsim <- function(n_timestep = 1000,
                        k = k,
                        m_int = m_int,
                        eps = m_eps[i, ],
-                       stochastic = stochastic) %>%
+                       stochastic = stochastic,
+                       alpha_scale = alpha_scale) %>%
       as.vector()
 
     v_n <- v_n_hat + m_im[i, ]
