@@ -11,7 +11,7 @@
 #' @param r_min Minimum value of intrinsic population growth rate. Disabled if \code{r_type = "constant"}.
 #' @param r_max Maximum value of intrinsic population growth rate. Disabled if \code{r_type = "constant"}.
 #' @param sd_env SD of environmental stochasticity in a log scale.
-#' @param d_st Whether demographic stochasticity is induced or not. If TRUE, population & immigration outcomes will be a random draws from a Poisson distribution with the expected value of population density or immigration.
+#' @param stochastic Whether demographic stochasticity is induced or not. If TRUE, population & immigration outcomes will be a random draws from a Poisson distribution with the expected value of population density or immigration.
 #' @param stock Number of released individuals.
 #' @param phi Fitness of released individuals relative to wild individuals.
 #' @param int_type Generation method for an interaction matrix.  Either \code{"constant"}, \code{"random"}, or \code{"manual"}.
@@ -47,7 +47,7 @@ cdynsim <- function(n_timestep = 1000,
                     r_min = 1.0,
                     r_max = 3.5,
                     sd_env = 0.1,
-                    d_st = FALSE,
+                    stochastic = FALSE,
                     stock = 0,
                     phi = 1,
                     int_type = "constant",
@@ -64,11 +64,11 @@ cdynsim <- function(n_timestep = 1000,
 
   # beverton-holt function
   if (model == "bh") {
-    fun_dyn <- function(r, n1, n2, k, m_int, eps, d_st = FALSE) {
+    fun_dyn <- function(r, n1, n2, k, m_int, eps, stochastic = FALSE) {
       n_bar <- (n1 * exp(r)) / (1 + ((exp(r) - 1) / k) * (m_int %*% n2))
       n_hat <- n_bar * exp(eps)
 
-      if(isTRUE(d_st)) y <- rpois(n = length(n_hat), lambda = n_hat) else y <- as.vector(n_hat)
+      if(stochastic) y <- rpois(n = length(n_hat), lambda = n_hat) else y <- as.vector(n_hat)
 
       return(y)
     }
@@ -76,11 +76,11 @@ cdynsim <- function(n_timestep = 1000,
 
   # ricker
   if (model == "ricker") {
-    fun_dyn <- function(r, n1, n2, k, m_int, eps, d_st = FALSE) {
+    fun_dyn <- function(r, n1, n2, k, m_int, eps, stochastic = FALSE) {
       n_bar <- n1 * exp(r * (1 - ((m_int %*% n2) / k)))
       n_hat <- n_bar * exp(eps)
 
-      if(isTRUE(d_st)) y <- rpois(n = length(n_hat), lambda = n_hat) else y <- as.vector(n_hat)
+      if(stochastic) y <- rpois(n = length(n_hat), lambda = n_hat) else y <- as.vector(n_hat)
 
       return(y)
     }
@@ -203,7 +203,7 @@ cdynsim <- function(n_timestep = 1000,
     }
   }
 
-  if(isTRUE(d_st)) {
+  if(stochastic) {
     m_im <- matrix(rpois(n = n_sim * n_species, lambda = c(m_im)),
                    nrow = n_sim,
                    ncol = n_species)
@@ -245,7 +245,7 @@ cdynsim <- function(n_timestep = 1000,
                        k = k,
                        m_int = m_int,
                        eps = m_eps[i, ],
-                       d_st = d_st) %>%
+                       stochastic = stochastic) %>%
       as.vector()
 
     v_n <- v_n_hat + m_im[i, ]
