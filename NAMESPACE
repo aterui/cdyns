@@ -2,6 +2,9 @@
 
 export(cdynsim)
 export(fn_model)
+export(set_competition)
+export(set_im)
+export(set_r)
 importFrom(dplyr,"%>%")
 importFrom(rlang,.data)
 importFrom(stats,rbinom)

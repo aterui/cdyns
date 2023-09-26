@@ -16,8 +16,8 @@ lintr::lint_package()
 
 # test --------------------------------------------------------------------
 
-usethis::use_testthat()
-usethis::use_test("cdynsim")
+# usethis::use_testthat()
+# usethis::use_test("cdynsim")
 
 
 # coverage ----------------------------------------------------------------

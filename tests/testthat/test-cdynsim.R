@@ -1,5 +1,5 @@
 
-test_that("test equilibrium density", {
+test_that("test equilibrium density; scaled", {
 
   k <- 100
   re1 <- cdynsim(n_species = 1,
@@ -15,6 +15,21 @@ test_that("test equilibrium density", {
                  k = k)
 
   expect_equal(re2$df_community$mean_density, n_species * k)
+
+})
+
+test_that("test equilibrium density; unscaled", {
+
+  r <- runif(1, 0.5, 1.5)
+  alpha <- runif(1, 0, 1)
+  re1 <- cdynsim(n_species = 1,
+                 sd_env = 0,
+                 alpha = alpha,
+                 r = r,
+                 alpha_scale = "unscaled")
+
+  expect_equal(round(re1$df_community$mean_density),
+               round(r / alpha))
 
 })
 

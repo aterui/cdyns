@@ -16,6 +16,7 @@
 #' @param phi Fitness of released individuals relative to wild individuals.
 #' @param int_type Generation method for an interaction matrix.  Either \code{"constant"}, \code{"random"}, or \code{"manual"}.
 #' @param alpha Interspecific competition coefficient. Constant if \code{int_type = "constant"}. Expected value of an exponential distribution if \code{int_type = "random"}. Provide a full matrix if \code{int_type = "manual"}.
+#' @param alpha_scale "scaled" or "unscaled". If scaled, competition coefficients are scaled by carrying capacity.
 #' @param immigration Mean immigration per generation. Immigration is determined as \code{m ~ N(log(immigration), sd_immigration^2)}
 #' @param sd_immigration SD immigration over time in a log scale.
 #' @param model Model for community dynamics. Either \code{"ricker"} (multi-species Ricker model) or \code{"bh"} (multi-species Beverton-Holt model).
@@ -62,13 +63,11 @@ cdynsim <- function(n_timestep = 1000,
 ) {
 
   # model type --------------------------------------------------------------
-
   fun_dyn <- fn_model(model = model)
 
   # variables ---------------------------------------------------------------
 
   ## basic objects ####
-
   n_sim <- n_warmup + n_burnin + n_timestep
   n_discard <- n_warmup + n_burnin
   if (is.null(n_stock_start)) n_stock_start <- n_warmup + 1
@@ -88,68 +87,19 @@ cdynsim <- function(n_timestep = 1000,
   v_n <- rep(seed, n_species)
 
   ## parameter: species interaction ####
-
-  ### off-diagonal elements
-  if (int_type == "random") {
-    if (length(alpha) > 1) stop("alpha must be a scalar")
-    m_int <- matrix(rexp(n_species * n_species,
-                         rate = 1 / alpha),
-                    nrow = n_species,
-                    ncol = n_species)
-  }
-
-  if (int_type == "constant") {
-    if (length(alpha) > 1) stop("alpha must be a scalar")
-    m_int <- matrix(alpha,
-                    nrow = n_species,
-                    ncol = n_species)
-  }
-
-  if (int_type == "manual") {
-    if (!is.matrix(alpha)) stop("alpha must be a matrix")
-    if (any(dim(alpha) != n_species)) stop("alpha must have dimensions of n_species")
-    m_int <- alpha
-  }
-
-  if (!(int_type %in% c("random", "constant", "manual"))) {
-    stop("int_type must be either random, constant, or manual")
-  }
-
-  ### diagonal elements
-  if (alpha_scale == "scaled") {
-    diag(m_int) <- 1
-  } else {
-    if (alpha_scale == "unscaled") {
-      message('"alpha_scale = "unscaled"; carrying capacity is controlled by "alpha"')
-    } else {
-      stop ('"alpha_scaled" must be either "scaled" or "unscaled"')
-    }
-  }
+  m_int <- set_competition(n_species = n_species,
+                           int_type = int_type,
+                           alpha = alpha,
+                           alpha_scale = alpha_scale)
 
   ## parameter: population dynamics ####
-
-  if (r_type == "random") {
-    v_r <- runif(n = n_species,
-                 min = r_min,
-                 max = r_max)
-  } else {
-    if (r_type == "constant") {
-
-      if (length(r) == 1) {
-        v_r <- rep(r, n_species)
-      } else {
-        if (length(r) != n_species) stop("r must have a length of n_species")
-        v_r <- r
-      }
-
-    } else {
-      message("r_type must be either random or constant")
-    }
-  }
-
+  v_r <- set_r(n_species = n_species,
+               r = r,
+               r_type = r_type,
+               r_min = r_min,
+               r_max = r_max)
 
   ## parameter: environmental stochasticity ####
-
   m_eps <- matrix(rnorm(n = n_sim * n_species,
                         mean = 0,
                         sd = sd_env),
@@ -158,46 +108,13 @@ cdynsim <- function(n_timestep = 1000,
                   byrow = TRUE) # time x species matrix
 
   ## parameter: immigration ####
-
-  m_im <- matrix(NA, nrow = n_sim, ncol = n_species)
-
-  ### vector mean immigration
-  if (length(immigration) == 1) {
-
-    v_im <- rep(immigration, n_species)
-
-  } else {
-
-    if(length(immigration) != n_species) stop("the number of elements in immigration must match n_species")
-    v_im <- immigration
-
-  }
-
-  ### matrix immigration
-  for (s in 1:n_species) {
-    if (v_im[s] > 0) {
-
-      v_log_im <- rnorm(n = n_sim,
-                        mean = log(v_im[s]),
-                        sd = sd_immigration)
-
-      m_im[ , s] <- exp(v_log_im)
-
-    } else {
-
-      m_im[ , s] <- rep(0, n_sim)
-
-    }
-  }
-
-  if(stochastic) {
-    m_im <- matrix(rpois(n = n_sim * n_species, lambda = c(m_im)),
-                   nrow = n_sim,
-                   ncol = n_species)
-  }
+  m_im <- set_im(n_sim = n_sim,
+                 n_species = n_species,
+                 immigration = immigration,
+                 sd_immigration = sd_immigration,
+                 stochastic = stochastic)
 
   ## seed interval ####
-
   if (n_warmup > 0) {
 
     if (seed_interval > n_warmup) stop("n_warmup must be equal to or larger than seed_interval")

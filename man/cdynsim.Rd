@@ -63,6 +63,8 @@ cdynsim(
 
 \item{alpha}{Interspecific competition coefficient. Constant if \code{int_type = "constant"}. Expected value of an exponential distribution if \code{int_type = "random"}. Provide a full matrix if \code{int_type = "manual"}.}
 
+\item{alpha_scale}{"scaled" or "unscaled". If scaled, competition coefficients are scaled by carrying capacity.}
+
 \item{immigration}{Mean immigration per generation. Immigration is determined as \code{m ~ N(log(immigration), sd_immigration^2)}}
 
 \item{sd_immigration}{SD immigration over time in a log scale.}

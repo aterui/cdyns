@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{fn_model}
 \alias{fn_model}
-\title{Get dynamics function}
+\title{Utility: get dynamics function}
 \usage{
 fn_model(model)
 }
@@ -10,5 +10,5 @@ fn_model(model)
 \item{model}{Model for community dynamics. Either \code{"ricker"} (multi-species Ricker model) or \code{"bh"} (multi-species Beverton-Holt model).}
 }
 \description{
-Get dynamics function
+Utility: get dynamics function
 }
