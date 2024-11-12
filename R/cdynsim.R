@@ -81,6 +81,7 @@ cdynsim <- function(n_timestep = 1000,
 ) {
 
   # model type --------------------------------------------------------------
+
   fun_dyn <- fn_model(model = model)
 
   # variables ---------------------------------------------------------------
@@ -93,6 +94,7 @@ cdynsim <- function(n_timestep = 1000,
   m_dyn <- matrix(NA,
                   nrow = n_timestep * n_species,
                   ncol = 4)
+
   colnames(m_dyn) <- c("timestep",
                        "species",
                        "density",
@@ -135,7 +137,9 @@ cdynsim <- function(n_timestep = 1000,
   ## seed interval ####
   if (n_warmup > 0) {
 
-    if (seed_interval > n_warmup) stop("n_warmup must be equal to or larger than seed_interval")
+    if (seed_interval > n_warmup)
+      stop("n_warmup must be equal to or larger than seed_interval")
+
     seeding <- seq(from = seed_interval,
                    to = max(c(1, n_warmup)),
                    by = seed_interval)
@@ -148,9 +152,13 @@ cdynsim <- function(n_timestep = 1000,
 
     # seeding
     if (n_warmup > 0) {
+
       if (i %in% seeding) {
+
         v_n <- v_n + rpois(n_species, seed)
+
       }
+
     }
 
     v_n1 <- v_n2 <- v_n
