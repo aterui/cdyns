@@ -1,33 +1,51 @@
 #' Community dynamics simulation with stock enhancement
 #'
 #' @param n_timestep Number of simulation time steps to be saved
-#' @param n_warmup Number of warm-up time steps. Species are randomly seeded during this period with no stock enhancement.
-#' @param n_burnin Number of burn-in time steps. Stock enhancement operates.
+#' @param n_warmup Number of warm-up time steps.
+#'  Species are randomly seeded during this period with no stock enhancement.
+#' @param n_burnin Number of burn-in time steps.
+#'  Stock enhancement operates.
 #' @param n_stock_start Time step at which stocking starts.
 #' @param n_species Number of species in a simulated community.
 #' @param k Carrying capacity.
-#' @param r_type Generation method for intrinsic population growth rates. Either \code{"constant"} or \code{"random"}.
-#' @param r Intrinsic population growth rate. Disabled if \code{r_type = "random"}.
-#' @param r_min Minimum value of intrinsic population growth rate. Disabled if \code{r_type = "constant"}.
-#' @param r_max Maximum value of intrinsic population growth rate. Disabled if \code{r_type = "constant"}.
+#' @param r_type Generation method for intrinsic population growth rates.
+#'  Either \code{"constant"} or \code{"random"}.
+#' @param r Intrinsic population growth rate.
+#'  Disabled if \code{r_type = "random"}.
+#' @param r_min Minimum value of intrinsic population growth rate.
+#'  Disabled if \code{r_type = "constant"}.
+#' @param r_max Maximum value of intrinsic population growth rate.
+#'  Disabled if \code{r_type = "constant"}.
 #' @param sd_env SD of environmental stochasticity in a log scale.
-#' @param stochastic Whether demographic stochasticity is induced or not. If TRUE, population & immigration outcomes will be a random draws from a Poisson distribution with the expected value of population density or immigration.
+#' @param stochastic Whether demographic stochasticity is induced or not.
+#'  If `TRUE`, population & immigration outcomes will be a random draws
+#'  from a Poisson distribution with
+#'  the expected value of population density or immigration.
 #' @param stock Number of released individuals.
 #' @param phi Fitness of released individuals relative to wild individuals.
-#' @param int_type Generation method for an interaction matrix.  Either \code{"constant"}, \code{"random"}, or \code{"manual"}.
-#' @param alpha Interspecific competition coefficient. Constant if \code{int_type = "constant"}. Expected value of an exponential distribution if \code{int_type = "random"}. Provide a full matrix if \code{int_type = "manual"}.
-#' @param alpha_scale "scaled" or "unscaled". If scaled, competition coefficients are scaled by carrying capacity.
-#' @param immigration Mean immigration per generation. Immigration is determined as \code{m ~ N(log(immigration), sd_immigration^2)}
+#' @param int_type Generation method for an interaction matrix.
+#'   Either \code{"constant"}, \code{"random"}, or \code{"manual"}.
+#' @param alpha Interspecific competition coefficient.
+#'  Constant if \code{int_type = "constant"}.
+#'  Expected value of an exponential distribution if \code{int_type = "random"}.
+#'  Provide a full matrix if \code{int_type = "manual"}.
+#' @param alpha_scale Logical.
+#'  If `TRUE`, competition coefficients are scaled by carrying capacity.
+#' @param immigration Mean immigration per generation.
+#'  Immigration is determined as `m ~ N(log(immigration), sd_immigration^2)`
 #' @param sd_immigration SD immigration over time in a log scale.
-#' @param model Model for community dynamics. Either \code{"ricker"} (multi-species Ricker model) or \code{"bh"} (multi-species Beverton-Holt model).
+#' @param model Model for community dynamics.
+#'  Either `"ricker"` (multi-species Ricker model) or
+#'  `"bh"` (multi-species Beverton-Holt model).
 #' @param seed Expected number of seeds.
 #' @param seed_interval Time interval for seeding.
-#' @param extinct Absorbing condition. Species with density < extinct will be removed from the simulation.
+#' @param extinct Absorbing condition.
+#'  Species with density < extinct will be removed from the simulation.
 #'
-#' @return \code{df_dyn}
-#' @return \code{df_community}
-#' @return \code{df_species}
-#' @return \code{interaction_matrix}
+#' @return `df_dyn`
+#' @return `df_community`
+#' @return `df_species`
+#' @return `interaction_matrix`
 #'
 #' @importFrom dplyr %>%
 #' @importFrom stats rnorm runif rpois rbinom rexp sd var
@@ -53,7 +71,7 @@ cdynsim <- function(n_timestep = 1000,
                     phi = 1,
                     int_type = "constant",
                     alpha = 0.5,
-                    alpha_scale = "scaled",
+                    alpha_scale = TRUE,
                     immigration = 0,
                     sd_immigration = 0,
                     model = "ricker",
