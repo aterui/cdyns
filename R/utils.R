@@ -90,43 +90,58 @@ fn_model <- function(model) {
 #' @inheritParams cdynsim
 #' @export
 
-set_competition <- function(n_species, int_type, alpha, alpha_scale) {
+set_competition <- function(n_species,
+                            int_type,
+                            alpha,
+                            alpha_scale) {
 
-  ### off-diagonal elements
-  if (int_type == "random") {
-    if (length(alpha) > 1) stop("alpha must be a scalar")
-    m_int <- matrix(rexp(n_species * n_species,
-                         rate = 1 / alpha),
-                    nrow = n_species,
-                    ncol = n_species)
-  }
+  if (!any(int_type == c("random", "constant", "manual"))) {
 
-  if (int_type == "constant") {
-    if (length(alpha) > 1) stop("alpha must be a scalar")
-    m_int <- matrix(alpha,
-                    nrow = n_species,
-                    ncol = n_species)
-  }
-
-  if (int_type == "manual") {
-    if (!is.matrix(alpha)) stop("alpha must be a matrix")
-    if (any(dim(alpha) != n_species)) stop("alpha must have dimensions of n_species")
-    m_int <- alpha
-  }
-
-  if (!(int_type %in% c("random", "constant", "manual"))) {
     stop("int_type must be either random, constant, or manual")
+
+  } else {
+
+    ### off-diagonal elements
+    if (int_type == "random") {
+      if (length(alpha) > 1)
+        stop("alpha must be a scalar")
+
+      m_int <- matrix(rexp(n_species * n_species,
+                           rate = 1 / alpha),
+                      nrow = n_species,
+                      ncol = n_species)
+    }
+
+    if (int_type == "constant") {
+      if (length(alpha) > 1)
+        stop("alpha must be a scalar")
+
+      m_int <- matrix(alpha,
+                      nrow = n_species,
+                      ncol = n_species)
+    }
+
+    if (int_type == "manual") {
+      if (!is.matrix(alpha))
+        stop("alpha must be a matrix")
+
+      if (any(dim(alpha) != n_species))
+        stop("alpha must have dimensions of n_species")
+
+      m_int <- alpha
+    }
+
   }
 
   ### diagonal elements
-  if (alpha_scale == "scaled") {
+  if (alpha_scale) {
+
     diag(m_int) <- 1
+
   } else {
-    if (alpha_scale == "unscaled") {
-      message('"alpha_scale = "unscaled"; carrying capacity is controlled by "r" & "alpha"')
-    } else {
-      stop('"alpha_scale" must be either "scaled" or "unscaled"')
-    }
+
+    message('alpha_scale = FALSE; carrying capacity is controlled by "r" & "alpha"')
+
   }
 
   return(m_int)
