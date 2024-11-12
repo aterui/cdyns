@@ -157,9 +157,15 @@ set_r <- function(n_species, r, r_type, r_min, r_max) {
 #' @inheritParams cdynsim
 #' @export
 
-set_im <- function(n_sim, n_species, immigration, sd_immigration, stochastic) {
+set_im <- function(n_sim,
+                   n_species,
+                   immigration,
+                   sd_immigration,
+                   stochastic) {
 
-  m_im <- matrix(NA, nrow = n_sim, ncol = n_species)
+  m_im <- matrix(NA,
+                 nrow = n_sim,
+                 ncol = n_species)
 
   ### vector mean immigration
   if (length(immigration) == 1) {
@@ -168,7 +174,9 @@ set_im <- function(n_sim, n_species, immigration, sd_immigration, stochastic) {
 
   } else {
 
-    if (length(immigration) != n_species) stop("the number of elements in immigration must match n_species")
+    if (length(immigration) != n_species)
+      stop("the number of elements in immigration must match n_species")
+
     v_im <- immigration
 
   }
