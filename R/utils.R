@@ -242,7 +242,8 @@ set_im <- function(n_sim,
   }
 
   if (stochastic) {
-    m_im <- matrix(rpois(n = n_sim * n_species, lambda = c(m_im)),
+    m_im <- matrix(rpois(n = n_sim * n_species,
+                         lambda = c(m_im)),
                    nrow = n_sim,
                    ncol = n_species)
   }
