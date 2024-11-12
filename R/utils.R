@@ -56,11 +56,11 @@ fn_model <- function(model) {
 
       if (alpha_scale) {
 
-        n_bar <- n1 * exp(r * (1 - ((m_int %*% n2) / k)))
+        n_bar <- n1 * exp(r * (1 + ((m_int %*% n2) / k)))
 
       } else {
 
-        n_bar <- n1 * exp(r - m_int %*% n2)
+        n_bar <- n1 * exp(r + m_int %*% n2)
 
       }
 
