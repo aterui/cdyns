@@ -153,7 +153,11 @@ set_competition <- function(n_species,
 #' @inheritParams cdynsim
 #' @export
 
-set_r <- function(n_species, r, r_type, r_min, r_max) {
+set_r <- function(n_species,
+                  r,
+                  r_type,
+                  r_min,
+                  r_max) {
 
   if (r_type == "random") {
 
@@ -166,14 +170,22 @@ set_r <- function(n_species, r, r_type, r_min, r_max) {
     if (r_type == "constant") {
 
       if (length(r) == 1) {
+
         v_r <- rep(r, n_species)
+
       } else {
-        if (length(r) != n_species) stop("r must have a length of n_species")
+
+        if (length(r) != n_species)
+          stop("r must have a length of n_species")
+
         v_r <- r
+
       }
 
     } else {
+
       message("r_type must be either random or constant")
+
     }
 
   }
