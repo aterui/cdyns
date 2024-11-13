@@ -137,7 +137,7 @@ set_competition <- function(n_species,
   ### diagonal elements
   if (alpha_scale) {
 
-    diag(m_int) <- 1
+    diag(m_int) <- inv_sign * (-1) + (1 - inv_sign) * 1
 
   } else {
 
@@ -145,7 +145,7 @@ set_competition <- function(n_species,
 
   }
 
-  m_int <- -inv_sign * m_int + (1 - inv_sign) * m_int
+  m_int <- inv_sign * (-m_int) + (1 - inv_sign) * m_int
 
   return(m_int)
 }
