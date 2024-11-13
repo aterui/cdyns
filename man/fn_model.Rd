@@ -7,7 +7,9 @@
 fn_model(model)
 }
 \arguments{
-\item{model}{Model for community dynamics. Either \code{"ricker"} (multi-species Ricker model) or \code{"bh"} (multi-species Beverton-Holt model).}
+\item{model}{Model for community dynamics.
+Either \code{"ricker"} (multi-species Ricker model) or
+\code{"bh"} (multi-species Beverton-Holt model).}
 }
 \description{
 Utility: get dynamics function

@@ -11,11 +11,15 @@ set_im(n_sim, n_species, immigration, sd_immigration, stochastic)
 
 \item{n_species}{Number of species in a simulated community.}
 
-\item{immigration}{Mean immigration per generation. Immigration is determined as \code{m ~ N(log(immigration), sd_immigration^2)}}
+\item{immigration}{Mean immigration per generation.
+Immigration is determined as \code{m ~ N(log(immigration), sd_immigration^2)}}
 
 \item{sd_immigration}{SD immigration over time in a log scale.}
 
-\item{stochastic}{Whether demographic stochasticity is induced or not. If TRUE, population & immigration outcomes will be a random draws from a Poisson distribution with the expected value of population density or immigration.}
+\item{stochastic}{Whether demographic stochasticity is induced or not.
+If \code{TRUE}, population & immigration outcomes will be a random draws
+from a Poisson distribution with
+the expected value of population density or immigration.}
 }
 \description{
 Utility: set immigration

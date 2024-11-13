@@ -9,13 +9,17 @@ set_r(n_species, r, r_type, r_min, r_max)
 \arguments{
 \item{n_species}{Number of species in a simulated community.}
 
-\item{r}{Intrinsic population growth rate. Disabled if \code{r_type = "random"}.}
+\item{r}{Intrinsic population growth rate.
+Disabled if \code{r_type = "random"}.}
 
-\item{r_type}{Generation method for intrinsic population growth rates. Either \code{"constant"} or \code{"random"}.}
+\item{r_type}{Generation method for intrinsic population growth rates.
+Either \code{"constant"} or \code{"random"}.}
 
-\item{r_min}{Minimum value of intrinsic population growth rate. Disabled if \code{r_type = "constant"}.}
+\item{r_min}{Minimum value of intrinsic population growth rate.
+Disabled if \code{r_type = "constant"}.}
 
-\item{r_max}{Maximum value of intrinsic population growth rate. Disabled if \code{r_type = "constant"}.}
+\item{r_max}{Maximum value of intrinsic population growth rate.
+Disabled if \code{r_type = "constant"}.}
 }
 \description{
 Utility: set intrinsic growth rate
