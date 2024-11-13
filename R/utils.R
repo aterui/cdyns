@@ -93,7 +93,8 @@ fn_model <- function(model) {
 set_competition <- function(n_species,
                             int_type,
                             alpha,
-                            alpha_scale) {
+                            alpha_scale,
+                            inv_sign) {
 
   if (!any(int_type == c("random", "constant", "manual"))) {
 
@@ -143,6 +144,8 @@ set_competition <- function(n_species,
     message('alpha_scale = FALSE; carrying capacity is controlled by "r" & "alpha"')
 
   }
+
+  m_int <- -inv_sign * m_int + (1 - inv_sign) * m_int
 
   return(m_int)
 }

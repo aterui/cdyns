@@ -31,6 +31,12 @@
 #'  Provide a full matrix if `int_type = "manual"`.
 #' @param alpha_scale Logical.
 #'  If `TRUE`, competition coefficients are scaled by carrying capacity.
+#' @param inv_sign Logical.
+#'  Indicate whether the sign of competition coefficients is multiplied by minus one.
+#'  If `TRUE`, values in `alpha` will become `-alpha` internally.
+#'  For example, with a Ricker model, the equation will be
+#'   `x * exp(r - alpha * x)`
+#'   (`x * exp(r + alpha * x)` if `inv_sign = FALSE`)
 #' @param immigration Mean immigration per generation.
 #'  Immigration is determined as `m ~ N(log(immigration), sd_immigration^2)`
 #' @param sd_immigration SD immigration over time in a log scale.
@@ -72,6 +78,7 @@ cdynsim <- function(n_timestep = 1000,
                     int_type = "constant",
                     alpha = 0.5,
                     alpha_scale = TRUE,
+                    inv_sign = TRUE,
                     immigration = 0,
                     sd_immigration = 0,
                     model = "ricker",
@@ -110,7 +117,8 @@ cdynsim <- function(n_timestep = 1000,
   m_int <- set_competition(n_species = n_species,
                            int_type = int_type,
                            alpha = alpha,
-                           alpha_scale = alpha_scale)
+                           alpha_scale = alpha_scale,
+                           inv_sign = inv_sign)
 
   ## parameter: population dynamics ####
   v_r <- set_r(n_species = n_species,
@@ -148,7 +156,14 @@ cdynsim <- function(n_timestep = 1000,
 
   # dynamics ----------------------------------------------------------------
 
-  for (i in seq_len(n_sim)) {
+  ## initialize m_dyn[,]
+  m_dyn[1:n_species, ] <- cbind(rep(1, n_species), # time step
+                                seq_len(n_species), # species ID
+                                v_n, # density
+                                m_im[1, ] # immigration
+                                )
+
+  for (i in 2:n_sim) {
 
     # seeding
     if (n_warmup > 0) {
