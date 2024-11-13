@@ -24,10 +24,14 @@
 #' @param stock Number of released individuals.
 #' @param phi Fitness of released individuals relative to wild individuals.
 #' @param int_type Generation method for an interaction matrix.
-#'   Either `"constant"`, `"random"`, or `"manual"`.
-#' @param alpha Interspecific competition coefficient.
-#'  Constant if `int_type = "constant"`.
-#'  Expected value of an exponential distribution if `int_type = "random"`.
+#'   Either `"constant"` or `"random"`.
+#'   If `"random"`, competition coefficients are randomly generated
+#'    with an exponential distribution Exp(1/alpha).
+#'   If `"constant"`, competition coefficients are constant
+#'    or supplied as a full matrix.
+#' @param alpha Competition coefficient.
+#'  If `int_type = "constant"`, constant or a full matrix .
+#'  If `int_type = "random"`, alpha represents the expected value of an exponential distribution.
 #'  Provide a full matrix if `int_type = "manual"`.
 #' @param alpha_scale Logical.
 #'  If `TRUE`, competition coefficients are scaled by carrying capacity.
