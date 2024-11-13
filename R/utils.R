@@ -150,7 +150,9 @@ set_competition <- function(n_species,
       m_int <- inv_sign * (-m_int) + (1 - inv_sign) * m_int
     } else {
       m_int <- inv_sign * (-m_int) + (1 - inv_sign) * m_int
-      diag(m_int) <- sign(diag(m_int))
+      diag(m_int) <- ifelse(alpha != 0,
+                            sign(diag(m_int)),
+                            inv_sign * (-1) + (1 - inv_sign))
     }
 
   } else {
