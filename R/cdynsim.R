@@ -9,13 +9,13 @@
 #' @param n_species Number of species in a simulated community.
 #' @param k Carrying capacity.
 #' @param r_type Generation method for intrinsic population growth rates.
-#'  Either \code{"constant"} or \code{"random"}.
+#'  Either `"constant"` or `"random"`.
 #' @param r Intrinsic population growth rate.
-#'  Disabled if \code{r_type = "random"}.
+#'  Disabled if `r_type = "random"`.
 #' @param r_min Minimum value of intrinsic population growth rate.
-#'  Disabled if \code{r_type = "constant"}.
+#'  Disabled if `r_type = "constant"`.
 #' @param r_max Maximum value of intrinsic population growth rate.
-#'  Disabled if \code{r_type = "constant"}.
+#'  Disabled if `r_type = "constant"`.
 #' @param sd_env SD of environmental stochasticity in a log scale.
 #' @param stochastic Whether demographic stochasticity is induced or not.
 #'  If `TRUE`, population & immigration outcomes will be a random draws
@@ -24,11 +24,11 @@
 #' @param stock Number of released individuals.
 #' @param phi Fitness of released individuals relative to wild individuals.
 #' @param int_type Generation method for an interaction matrix.
-#'   Either \code{"constant"}, \code{"random"}, or \code{"manual"}.
+#'   Either `"constant"`, `"random"`, or `"manual"`.
 #' @param alpha Interspecific competition coefficient.
-#'  Constant if \code{int_type = "constant"}.
-#'  Expected value of an exponential distribution if \code{int_type = "random"}.
-#'  Provide a full matrix if \code{int_type = "manual"}.
+#'  Constant if `int_type = "constant"`.
+#'  Expected value of an exponential distribution if `int_type = "random"`.
+#'  Provide a full matrix if `int_type = "manual"`.
 #' @param alpha_scale Logical.
 #'  If `TRUE`, competition coefficients are scaled by carrying capacity.
 #' @param immigration Mean immigration per generation.
