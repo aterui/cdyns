@@ -114,22 +114,30 @@ set_competition <- function(n_species,
     }
 
     if (int_type == "constant") {
-      if (length(alpha) > 1)
-        stop("alpha must be a scalar")
 
-      m_int <- matrix(alpha,
-                      nrow = n_species,
-                      ncol = n_species)
-    }
+      if (length(alpha) > 1) {
 
-    if (int_type == "manual") {
-      if (!is.matrix(alpha))
-        stop("alpha must be a matrix")
+        if (!is.matrix(alpha) || any(dim(alpha) != n_species)) {
 
-      if (any(dim(alpha) != n_species))
-        stop("alpha must have dimensions of n_species")
+          stop("alpha must be a scalar or matrix with n_species x n_species dimentions.")
 
-      m_int <- alpha
+        } else {
+
+          m_int <- alpha
+
+        }
+
+      } else {
+
+        if (length(alpha) != 1)
+          stop("alpha must be a scalar or matrix with n_species x n_species dimentions.")
+
+        m_int <- matrix(alpha,
+                        nrow = n_species,
+                        ncol = n_species)
+
+      }
+
     }
 
   }
@@ -137,15 +145,20 @@ set_competition <- function(n_species,
   ### diagonal elements
   if (alpha_scale) {
 
-    diag(m_int) <- inv_sign * (-1) + (1 - inv_sign) * 1
+    if (int_type == "constant" && is.matrix(alpha)) {
+      message("Scaling of interaction coefficients was not performed because a full matrix was supplied.")
+      m_int <- inv_sign * (-m_int) + (1 - inv_sign) * m_int
+    } else {
+      m_int <- inv_sign * (-m_int) + (1 - inv_sign) * m_int
+      diag(m_int) <- sign(diag(m_int))
+    }
 
   } else {
 
     message('alpha_scale = FALSE; carrying capacity is controlled by "r" & "alpha"')
+    m_int <- inv_sign * (-m_int) + (1 - inv_sign) * m_int
 
   }
-
-  m_int <- inv_sign * (-m_int) + (1 - inv_sign) * m_int
 
   return(m_int)
 }
