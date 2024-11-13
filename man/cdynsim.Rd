@@ -70,18 +70,24 @@ the expected value of population density or immigration.}
 \item{phi}{Fitness of released individuals relative to wild individuals.}
 
 \item{int_type}{Generation method for an interaction matrix.
-Either \code{"constant"}, \code{"random"}, or \code{"manual"}.}
+Either \code{"constant"} or \code{"random"}.
+If \code{"random"}, competition coefficients are randomly generated
+with an exponential distribution Exp(1/alpha).
+If \code{"constant"}, competition coefficients are constant
+or supplied as a full matrix.}
 
-\item{alpha}{Interspecific competition coefficient.
-Constant if \code{int_type = "constant"}.
-Expected value of an exponential distribution if \code{int_type = "random"}.
+\item{alpha}{Competition coefficient.
+If \code{int_type = "constant"}, constant or a full matrix .
+If \code{int_type = "random"}, alpha represents the expected value of
+an exponential distribution.
 Provide a full matrix if \code{int_type = "manual"}.}
 
 \item{alpha_scale}{Logical.
 If \code{TRUE}, competition coefficients are scaled by carrying capacity.}
 
 \item{inv_sign}{Logical.
-Indicate whether the sign of competition coefficients is multiplied by minus one.
+Indicate whether the sign of competition coefficients
+is multiplied by minus one.
 If \code{TRUE}, values in \code{alpha} will become \code{-alpha} internally.
 For example, with a Ricker model, the equation will be
 \code{x * exp(r - alpha * x)}

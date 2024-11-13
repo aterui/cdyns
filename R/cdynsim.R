@@ -31,12 +31,14 @@
 #'    or supplied as a full matrix.
 #' @param alpha Competition coefficient.
 #'  If `int_type = "constant"`, constant or a full matrix .
-#'  If `int_type = "random"`, alpha represents the expected value of an exponential distribution.
+#'  If `int_type = "random"`, alpha represents the expected value of
+#'  an exponential distribution.
 #'  Provide a full matrix if `int_type = "manual"`.
 #' @param alpha_scale Logical.
 #'  If `TRUE`, competition coefficients are scaled by carrying capacity.
 #' @param inv_sign Logical.
-#'  Indicate whether the sign of competition coefficients is multiplied by minus one.
+#'  Indicate whether the sign of competition coefficients
+#'  is multiplied by minus one.
 #'  If `TRUE`, values in `alpha` will become `-alpha` internally.
 #'  For example, with a Ricker model, the equation will be
 #'   `x * exp(r - alpha * x)`
