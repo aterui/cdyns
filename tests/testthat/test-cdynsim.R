@@ -26,7 +26,7 @@ test_that("test equilibrium density; unscaled", {
                  sd_env = 0,
                  alpha = alpha,
                  r = r,
-                 alpha_scale = "unscaled")
+                 alpha_scale = FALSE)
 
   expect_equal(round(re1$df_community$mean_density),
                round(r / alpha))
