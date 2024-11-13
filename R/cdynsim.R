@@ -164,7 +164,7 @@ cdynsim <- function(n_timestep = 1000,
     v_n1 <- v_n2 <- v_n
 
     # stock enhancement
-    if (i > n_stock_start - 1) {
+    if (i >= n_stock_start && stock > 0) {
       v_n1[1] <- v_n1[1] + phi * stock # for reproduction
       v_n2[1] <- v_n2[1] + stock # for competition
     }
