@@ -222,6 +222,7 @@ set_im <- function(n_sim,
                    n_species,
                    immigration,
                    sd_immigration,
+                   p_immigration,
                    stochastic) {
 
   m_im <- matrix(NA,
@@ -242,7 +243,26 @@ set_im <- function(n_sim,
 
   }
 
+  ### vector prob immigration
+  if (length(p_immigration) == 1) {
+
+    v_p <- rep(p_immigration, n_species)
+
+  } else {
+
+    if (length(p_immigration) != n_species)
+      stop("the number of elements in p_immigration must match n_species")
+
+    v_p <- p_immigration
+
+  }
+
   ### matrix immigration
+  z <- sapply(v_p,
+              function(x) rbinom(n = n_sim,
+                                 size = 1,
+                                 prob = x))
+
   for (s in 1:n_species) {
     if (v_im[s] > 0) {
 
@@ -250,7 +270,7 @@ set_im <- function(n_sim,
                         mean = log(v_im[s]),
                         sd = sd_immigration)
 
-      m_im[, s] <- exp(v_log_im)
+      m_im[, s] <- exp(v_log_im) * z[, s]
 
     } else {
 

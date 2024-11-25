@@ -25,6 +25,7 @@ cdynsim(
   inv_sign = TRUE,
   immigration = 0,
   sd_immigration = 0,
+  p_immigration = 0,
   model = "ricker",
   seed = 5,
   seed_interval = 10,
@@ -97,6 +98,8 @@ For example, with a Ricker model, the equation will be
 Immigration is determined as \code{m ~ N(log(immigration), sd_immigration^2)}}
 
 \item{sd_immigration}{SD immigration over time in a log scale.}
+
+\item{p_immigration}{Probability of immigration.}
 
 \item{model}{Model for community dynamics.
 Either \code{"ricker"} (multi-species Ricker model) or

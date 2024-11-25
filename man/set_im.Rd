@@ -4,7 +4,14 @@
 \alias{set_im}
 \title{Utility: set immigration}
 \usage{
-set_im(n_sim, n_species, immigration, sd_immigration, stochastic)
+set_im(
+  n_sim,
+  n_species,
+  immigration,
+  sd_immigration,
+  p_immigration,
+  stochastic
+)
 }
 \arguments{
 \item{n_sim}{Total number of simulation run.}
@@ -15,6 +22,8 @@ set_im(n_sim, n_species, immigration, sd_immigration, stochastic)
 Immigration is determined as \code{m ~ N(log(immigration), sd_immigration^2)}}
 
 \item{sd_immigration}{SD immigration over time in a log scale.}
+
+\item{p_immigration}{Probability of immigration.}
 
 \item{stochastic}{Whether demographic stochasticity is induced or not.
 If \code{TRUE}, population & immigration outcomes will be a random draws

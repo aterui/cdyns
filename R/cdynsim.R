@@ -46,6 +46,7 @@
 #' @param immigration Mean immigration per generation.
 #'  Immigration is determined as `m ~ N(log(immigration), sd_immigration^2)`
 #' @param sd_immigration SD immigration over time in a log scale.
+#' @param p_immigration Probability of immigration.
 #' @param model Model for community dynamics.
 #'  Either `"ricker"` (multi-species Ricker model) or
 #'  `"bh"` (multi-species Beverton-Holt model).
@@ -87,6 +88,7 @@ cdynsim <- function(n_timestep = 1000,
                     inv_sign = TRUE,
                     immigration = 0,
                     sd_immigration = 0,
+                    p_immigration = 0,
                     model = "ricker",
                     seed = 5,
                     seed_interval = 10,
@@ -146,6 +148,7 @@ cdynsim <- function(n_timestep = 1000,
                  n_species = n_species,
                  immigration = immigration,
                  sd_immigration = sd_immigration,
+                 p_immigration = p_immigration,
                  stochastic = stochastic)
 
   ## seed interval ####
