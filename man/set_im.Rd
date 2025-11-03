@@ -19,7 +19,7 @@ set_im(
 \item{n_species}{Number of species in the simulated community.}
 
 \item{immigration}{Mean immigration rate per generation.
-Immigration follows \eqn{m ~ N(log(immigration), sd_immigration^2)}.}
+Immigration follows \eqn{m \sim N(\log immigration, \sigma^2)}.}
 
 \item{sd_immigration}{Standard deviation of immigration over time (on a log scale).}
 

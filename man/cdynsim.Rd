@@ -85,11 +85,11 @@ Either \code{"constant"} or \code{"random"}.
 
 \item{inv_sign}{Logical; if \code{TRUE}, competition coefficients are multiplied by -1.
 For instance, in a Ricker model:
-\deqn{x * exp(r - alpha * x)}{x * exp(r - alpha * x)}
-becomes \deqn{x * exp(r + alpha * x)}{x * exp(r + alpha * x)} if \code{inv_sign = FALSE}.}
+\deqn{x \exp(r - \alpha x)}{x \exp(r + \alpha x)}
+becomes \deqn{x \exp(r + \alpha x)}{x \exp(r - \alpha x)} if \code{inv_sign = TRUE}.}
 
 \item{immigration}{Mean immigration rate per generation.
-Immigration follows \eqn{m ~ N(log(immigration), sd_immigration^2)}.}
+Immigration follows \eqn{m \sim N(\log immigration, \sigma^2)}.}
 
 \item{sd_immigration}{Standard deviation of immigration over time (on a log scale).}
 

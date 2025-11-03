@@ -37,10 +37,10 @@
 #' @param alpha_scale Logical; if `TRUE`, competition coefficients are scaled by the carrying capacity `k`.
 #' @param inv_sign Logical; if `TRUE`, competition coefficients are multiplied by -1.
 #'  For instance, in a Ricker model:
-#'  \deqn{x * exp(r - alpha * x)}{x * exp(r - alpha * x)}
-#'  becomes \deqn{x * exp(r + alpha * x)}{x * exp(r + alpha * x)} if `inv_sign = FALSE`.
+#'  \deqn{x \exp(r - \alpha x)}{x \exp(r + \alpha x)}
+#'  becomes \deqn{x \exp(r + \alpha x)}{x \exp(r - \alpha x)} if `inv_sign = TRUE`.
 #' @param immigration Mean immigration rate per generation.
-#'  Immigration follows \eqn{m ~ N(log(immigration), sd_immigration^2)}.
+#'  Immigration follows \eqn{m \sim N(\log immigration, \sigma^2)}.
 #' @param sd_immigration Standard deviation of immigration over time (on a log scale).
 #' @param p_immigration Probability of immigration occurring in a given time step.
 #' @param model Model type for population dynamics.

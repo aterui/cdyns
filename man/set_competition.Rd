@@ -26,8 +26,8 @@ Either \code{"constant"} or \code{"random"}.
 
 \item{inv_sign}{Logical; if \code{TRUE}, competition coefficients are multiplied by -1.
 For instance, in a Ricker model:
-\deqn{x * exp(r - alpha * x)}{x * exp(r - alpha * x)}
-becomes \deqn{x * exp(r + alpha * x)}{x * exp(r + alpha * x)} if \code{inv_sign = FALSE}.}
+\deqn{x \exp(r - \alpha x)}{x \exp(r + \alpha x)}
+becomes \deqn{x \exp(r + \alpha x)}{x \exp(r - \alpha x)} if \code{inv_sign = TRUE}.}
 }
 \description{
 Utility: set competition coefficients
