@@ -96,47 +96,38 @@ set_competition <- function(n_species,
                             alpha_scale,
                             inv_sign) {
 
-  if (!any(int_type == c("random", "constant", "manual"))) {
+  if (!(int_type %in% c("random", "constant")))
+    stop("int_type must be either random or constant")
 
-    stop("int_type must be either random, constant, or manual")
+  ### off-diagonal elements
+  if (int_type == "random") {
 
-  } else {
+    if (length(alpha) > 1)
+      stop("alpha must be a scalar")
 
-    ### off-diagonal elements
-    if (int_type == "random") {
-      if (length(alpha) > 1)
-        stop("alpha must be a scalar")
+    m_int <- matrix(rexp(n_species * n_species,
+                         rate = 1 / alpha),
+                    nrow = n_species,
+                    ncol = n_species)
+  }
 
-      m_int <- matrix(rexp(n_species * n_species,
-                           rate = 1 / alpha),
+  if (int_type == "constant") {
+
+    if (length(alpha) > 1) {
+
+      if (!is.matrix(alpha) || any(dim(alpha) != n_species))
+        stop("alpha must be a scalar or matrix with n_species x n_species dimentions.")
+
+      m_int <- alpha
+
+    } else {
+
+      if (length(alpha) != 1)
+        stop("alpha must be a scalar or matrix with n_species x n_species dimentions.")
+
+      m_int <- matrix(alpha,
                       nrow = n_species,
                       ncol = n_species)
-    }
-
-    if (int_type == "constant") {
-
-      if (length(alpha) > 1) {
-
-        if (!is.matrix(alpha) || any(dim(alpha) != n_species)) {
-
-          stop("alpha must be a scalar or matrix with n_species x n_species dimentions.")
-
-        } else {
-
-          m_int <- alpha
-
-        }
-
-      } else {
-
-        if (length(alpha) != 1)
-          stop("alpha must be a scalar or matrix with n_species x n_species dimentions.")
-
-        m_int <- matrix(alpha,
-                        nrow = n_species,
-                        ncol = n_species)
-
-      }
 
     }
 
