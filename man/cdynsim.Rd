@@ -2,7 +2,7 @@
 % Please edit documentation in R/cdynsim.R
 \name{cdynsim}
 \alias{cdynsim}
-\title{Community dynamics simulation with stock enhancement}
+\title{Simulate community dynamics with stock enhancement}
 \usage{
 cdynsim(
   n_timestep = 1000,
@@ -33,96 +33,101 @@ cdynsim(
 )
 }
 \arguments{
-\item{n_timestep}{Number of simulation time steps to be saved}
+\item{n_timestep}{Number of time steps to record during the simulation.}
 
-\item{n_warmup}{Number of warm-up time steps.
-Species are randomly seeded during this period with no stock enhancement.}
+\item{n_warmup}{Number of warm-up steps before data recording begins.
+Species are randomly seeded during this period, without stock enhancement.}
 
-\item{n_burnin}{Number of burn-in time steps.
-Stock enhancement operates.}
+\item{n_burnin}{Number of burn-in steps after warm-up.
+Stock enhancement operates during this phase, but results are not recorded.}
 
-\item{n_stock_start}{Time step at which stocking starts.}
+\item{n_stock_start}{Time step at which stock enhancement begins.
+Defaults to the first step after warm-up (\code{n_warmup + 1}).}
 
-\item{n_species}{Number of species in a simulated community.}
+\item{n_species}{Number of species in the simulated community.}
 
 \item{k}{Carrying capacity.}
 
-\item{r_type}{Generation method for intrinsic population growth rates.
-Either \code{"constant"} or \code{"random"}.}
+\item{r_type}{Method for generating intrinsic population growth rates.
+Either \code{"constant"} (use fixed \code{r}) or \code{"random"} (drawn from uniform distribution
+between \code{r_min} and \code{r_max}).}
 
-\item{r}{Intrinsic population growth rate.
-Disabled if \code{r_type = "random"}.}
+\item{r}{Intrinsic growth rate (used only if \code{r_type = "constant"}).}
 
-\item{r_min}{Minimum value of intrinsic population growth rate.
-Disabled if \code{r_type = "constant"}.}
+\item{r_min}{Minimum intrinsic growth rate (used only if \code{r_type = "random"}).}
 
-\item{r_max}{Maximum value of intrinsic population growth rate.
-Disabled if \code{r_type = "constant"}.}
+\item{r_max}{Maximum intrinsic growth rate (used only if \code{r_type = "random"}).}
 
-\item{sd_env}{SD of environmental stochasticity in a log scale.}
+\item{sd_env}{Standard deviation of environmental stochasticity (on a log scale).}
 
-\item{stochastic}{Whether demographic stochasticity is induced or not.
-If \code{TRUE}, population & immigration outcomes will be a random draws
-from a Poisson distribution with
-the expected value of population density or immigration.}
+\item{stochastic}{Logical; if \code{TRUE}, demographic stochasticity is applied by
+drawing population and immigration counts from Poisson distributions with
+expected means equal to deterministic model outputs.}
 
-\item{stock}{Number of released individuals.}
+\item{stock}{Number of individuals released per stocking event.}
 
-\item{phi}{Fitness of released individuals relative to wild individuals.}
+\item{phi}{Relative fitness of stocked individuals compared to wild individuals.}
 
-\item{int_type}{Generation method for an interaction matrix.
+\item{int_type}{Method for generating interspecific competition coefficients.
 Either \code{"constant"} or \code{"random"}.
-If \code{"random"}, competition coefficients are randomly generated
-with an exponential distribution Exp(1/alpha).
-If \code{"constant"}, competition coefficients are constant
-or supplied as a full matrix.}
+\itemize{
+\item \code{"constant"}: use a constant value or a supplied full matrix.
+\item \code{"random"}: coefficients are drawn from an exponential distribution.
+}}
 
 \item{alpha}{Competition coefficient.
-If \code{int_type = "constant"}, constant or a full matrix .
-If \code{int_type = "random"}, alpha represents the expected value of
-an exponential distribution.
-Provide a full matrix if \code{int_type = "manual"}.}
+\itemize{
+\item If \code{int_type = "constant"}, \code{alpha} may be a single value or a full matrix.
+\item If \code{int_type = "random"}, \code{alpha} is the expected value of the exponential distribution.
+}}
 
-\item{alpha_scale}{Logical.
-If \code{TRUE}, competition coefficients are scaled by carrying capacity.}
+\item{alpha_scale}{Logical; if \code{TRUE}, competition coefficients are scaled by the carrying capacity \code{k}.}
 
-\item{inv_sign}{Logical.
-Indicate whether the sign of competition coefficients
-is multiplied by minus one.
-If \code{TRUE}, values in \code{alpha} will become \code{-alpha} internally.
-For example, with a Ricker model, the equation will be
-\code{x * exp(r - alpha * x)}
-(\code{x * exp(r + alpha * x)} if \code{inv_sign = FALSE})}
+\item{inv_sign}{Logical; if \code{TRUE}, competition coefficients are multiplied by -1.
+For instance, in a Ricker model:
+\deqn{x * exp(r - alpha * x)}{x * exp(r - alpha * x)}
+becomes \deqn{x * exp(r + alpha * x)}{x * exp(r + alpha * x)} if \code{inv_sign = FALSE}.}
 
-\item{immigration}{Mean immigration per generation.
-Immigration is determined as \code{m ~ N(log(immigration), sd_immigration^2)}}
+\item{immigration}{Mean immigration rate per generation.
+Immigration follows \eqn{m ~ N(log(immigration), sd_immigration^2)}.}
 
-\item{sd_immigration}{SD immigration over time in a log scale.}
+\item{sd_immigration}{Standard deviation of immigration over time (on a log scale).}
 
-\item{p_immigration}{Probability of immigration.}
+\item{p_immigration}{Probability of immigration occurring in a given time step.}
 
-\item{model}{Model for community dynamics.
-Either \code{"ricker"} (multi-species Ricker model) or
-\code{"bh"} (multi-species Beverton-Holt model).}
+\item{model}{Model type for population dynamics.
+Either \code{"ricker"} (multi-species Ricker model) or \code{"bh"} (multi-species Beverton-Holt model).}
 
-\item{seed}{Expected number of seeds.}
+\item{seed}{Expected number of individuals introduced per seeding event during the warm-up phase.}
 
-\item{seed_interval}{Time interval for seeding.}
+\item{seed_interval}{Time interval (in steps) between seeding events during warm-up.}
 
-\item{extinct}{Absorbing condition.
-Species with density < extinct will be removed from the simulation.}
+\item{extinct}{Extinction threshold; species with density below this value are set to zero.}
 }
 \value{
-\code{df_dyn}
-
-\code{df_community}
-
-\code{df_species}
-
-\code{interaction_matrix}
+A list with the following components:
+\describe{
+\item{\code{df_dyn}}{Tibble containing time-series data of species densities and immigrants.}
+\item{\code{df_community}}{Summary of community-level total density over time (mean and SD).}
+\item{\code{df_species}}{Species-level summaries of mean and SD of densities, with parameters.}
+\item{\code{interaction_matrix}}{Matrix of interspecific competition coefficients.}
+\item{\code{vcov_matrix}}{Variance-covariance matrix of species densities.}
+}
 }
 \description{
-Community dynamics simulation with stock enhancement
+This function simulates multi-species community dynamics using either the
+Ricker or Beverton-Holt model, incorporating environmental and demographic
+stochasticity, immigration, and optional stock enhancement (release of
+individuals). The simulation proceeds through a warm-up, burn-in, and
+recording phase, allowing for flexible model specification and parameterization.
+}
+\details{
+The simulation runs for \code{n_warmup + n_burnin + n_timestep} total steps.
+Only the final \code{n_timestep} steps are retained for analysis.
+
+During the warm-up phase, species densities are periodically increased
+by random seeding events. Stock enhancement begins at \code{n_stock_start}
+and applies to the first species, scaled by fitness \code{phi}.
 }
 \author{
 Akira Terui, \email{hanabi0111@gmail.com}

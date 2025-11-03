@@ -1,64 +1,70 @@
-#' Community dynamics simulation with stock enhancement
+#' Simulate community dynamics with stock enhancement
 #'
-#' @param n_timestep Number of simulation time steps to be saved
-#' @param n_warmup Number of warm-up time steps.
-#'  Species are randomly seeded during this period with no stock enhancement.
-#' @param n_burnin Number of burn-in time steps.
-#'  Stock enhancement operates.
-#' @param n_stock_start Time step at which stocking starts.
-#' @param n_species Number of species in a simulated community.
+#' This function simulates multi-species community dynamics using either the
+#' Ricker or Beverton-Holt model, incorporating environmental and demographic
+#' stochasticity, immigration, and optional stock enhancement (release of
+#' individuals). The simulation proceeds through a warm-up, burn-in, and
+#' recording phase, allowing for flexible model specification and parameterization.
+#'
+#' @param n_timestep Number of time steps to record during the simulation.
+#' @param n_warmup Number of warm-up steps before data recording begins.
+#'  Species are randomly seeded during this period, without stock enhancement.
+#' @param n_burnin Number of burn-in steps after warm-up.
+#'  Stock enhancement operates during this phase, but results are not recorded.
+#' @param n_stock_start Time step at which stock enhancement begins.
+#'  Defaults to the first step after warm-up (`n_warmup + 1`).
+#' @param n_species Number of species in the simulated community.
 #' @param k Carrying capacity.
-#' @param r_type Generation method for intrinsic population growth rates.
+#' @param r_type Method for generating intrinsic population growth rates.
+#'  Either `"constant"` (use fixed `r`) or `"random"` (drawn from uniform distribution
+#'  between `r_min` and `r_max`).
+#' @param r Intrinsic growth rate (used only if `r_type = "constant"`).
+#' @param r_min Minimum intrinsic growth rate (used only if `r_type = "random"`).
+#' @param r_max Maximum intrinsic growth rate (used only if `r_type = "random"`).
+#' @param sd_env Standard deviation of environmental stochasticity (on a log scale).
+#' @param stochastic Logical; if `TRUE`, demographic stochasticity is applied by
+#'  drawing population and immigration counts from Poisson distributions with
+#'  expected means equal to deterministic model outputs.
+#' @param stock Number of individuals released per stocking event.
+#' @param phi Relative fitness of stocked individuals compared to wild individuals.
+#' @param int_type Method for generating interspecific competition coefficients.
 #'  Either `"constant"` or `"random"`.
-#' @param r Intrinsic population growth rate.
-#'  Disabled if `r_type = "random"`.
-#' @param r_min Minimum value of intrinsic population growth rate.
-#'  Disabled if `r_type = "constant"`.
-#' @param r_max Maximum value of intrinsic population growth rate.
-#'  Disabled if `r_type = "constant"`.
-#' @param sd_env SD of environmental stochasticity in a log scale.
-#' @param stochastic Whether demographic stochasticity is induced or not.
-#'  If `TRUE`, population & immigration outcomes will be a random draws
-#'  from a Poisson distribution with
-#'  the expected value of population density or immigration.
-#' @param stock Number of released individuals.
-#' @param phi Fitness of released individuals relative to wild individuals.
-#' @param int_type Generation method for an interaction matrix.
-#'   Either `"constant"` or `"random"`.
-#'   If `"random"`, competition coefficients are randomly generated
-#'    with an exponential distribution Exp(1/alpha).
-#'   If `"constant"`, competition coefficients are constant
-#'    or supplied as a full matrix.
+#'  - `"constant"`: use a constant value or a supplied full matrix.
+#'  - `"random"`: coefficients are drawn from an exponential distribution.
 #' @param alpha Competition coefficient.
-#'  If `int_type = "constant"`, constant or a full matrix .
-#'  If `int_type = "random"`, alpha represents the expected value of
-#'  an exponential distribution.
-#'  Provide a full matrix if `int_type = "manual"`.
-#' @param alpha_scale Logical.
-#'  If `TRUE`, competition coefficients are scaled by carrying capacity.
-#' @param inv_sign Logical.
-#'  Indicate whether the sign of competition coefficients
-#'  is multiplied by minus one.
-#'  If `TRUE`, values in `alpha` will become `-alpha` internally.
-#'  For example, with a Ricker model, the equation will be
-#'   `x * exp(r - alpha * x)`
-#'   (`x * exp(r + alpha * x)` if `inv_sign = FALSE`)
-#' @param immigration Mean immigration per generation.
-#'  Immigration is determined as `m ~ N(log(immigration), sd_immigration^2)`
-#' @param sd_immigration SD immigration over time in a log scale.
-#' @param p_immigration Probability of immigration.
-#' @param model Model for community dynamics.
-#'  Either `"ricker"` (multi-species Ricker model) or
-#'  `"bh"` (multi-species Beverton-Holt model).
-#' @param seed Expected number of seeds.
-#' @param seed_interval Time interval for seeding.
-#' @param extinct Absorbing condition.
-#'  Species with density < extinct will be removed from the simulation.
+#'  - If `int_type = "constant"`, `alpha` may be a single value or a full matrix.
+#'  - If `int_type = "random"`, `alpha` is the expected value of the exponential distribution.
+#' @param alpha_scale Logical; if `TRUE`, competition coefficients are scaled by the carrying capacity `k`.
+#' @param inv_sign Logical; if `TRUE`, competition coefficients are multiplied by -1.
+#'  For instance, in a Ricker model:
+#'  \deqn{x * exp(r - alpha * x)}{x * exp(r - alpha * x)}
+#'  becomes \deqn{x * exp(r + alpha * x)}{x * exp(r + alpha * x)} if `inv_sign = FALSE`.
+#' @param immigration Mean immigration rate per generation.
+#'  Immigration follows \eqn{m ~ N(log(immigration), sd_immigration^2)}.
+#' @param sd_immigration Standard deviation of immigration over time (on a log scale).
+#' @param p_immigration Probability of immigration occurring in a given time step.
+#' @param model Model type for population dynamics.
+#'  Either `"ricker"` (multi-species Ricker model) or `"bh"` (multi-species Beverton-Holt model).
+#' @param seed Expected number of individuals introduced per seeding event during the warm-up phase.
+#' @param seed_interval Time interval (in steps) between seeding events during warm-up.
+#' @param extinct Extinction threshold; species with density below this value are set to zero.
 #'
-#' @return `df_dyn`
-#' @return `df_community`
-#' @return `df_species`
-#' @return `interaction_matrix`
+#' @return A list with the following components:
+#' \describe{
+#'   \item{`df_dyn`}{Tibble containing time-series data of species densities and immigrants.}
+#'   \item{`df_community`}{Summary of community-level total density over time (mean and SD).}
+#'   \item{`df_species`}{Species-level summaries of mean and SD of densities, with parameters.}
+#'   \item{`interaction_matrix`}{Matrix of interspecific competition coefficients.}
+#'   \item{`vcov_matrix`}{Variance-covariance matrix of species densities.}
+#' }
+#'
+#' @details
+#' The simulation runs for `n_warmup + n_burnin + n_timestep` total steps.
+#' Only the final `n_timestep` steps are retained for analysis.
+#'
+#' During the warm-up phase, species densities are periodically increased
+#' by random seeding events. Stock enhancement begins at `n_stock_start`
+#' and applies to the first species, scaled by fitness `phi`.
 #'
 #' @importFrom dplyr %>%
 #' @importFrom stats rnorm runif rpois rbinom rexp sd var
